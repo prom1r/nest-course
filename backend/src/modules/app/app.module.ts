@@ -5,6 +5,7 @@ import { UsersModule } from 'src/modules/users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config'; // используется для передачи конфигурации из файла .env
 import { SequelizeModule } from '@nestjs/sequelize'; //после добавления в .env даных (DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
 import congigurations from 'src/configurations';
+import { User } from '../users/models/user.model';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import congigurations from 'src/configurations';
         database: configService.get('db_name'),
         autoLoadModels: true, // автоматически загружать модели
         synchronize: true,
+        models: [User],
       }),
     }),
     UsersModule,
