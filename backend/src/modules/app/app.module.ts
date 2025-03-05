@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config'; // использ�
 import { SequelizeModule } from '@nestjs/sequelize'; //после добавления в .env даных (DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
 import congigurations from 'src/configurations';
 import { User } from '../users/models/user.model';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { User } from '../users/models/user.model';
       }),
     }),
     UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -8,5 +8,6 @@ import { User } from './models/user.model';
   imports: [SequelizeModule.forFeature([User])], // добавляем модуль для работы с БД
   controllers: [UsersController],
   providers: [UsersService],
+  exports: [UsersService],
 })
 export class UsersModule {}
