@@ -8,10 +8,14 @@ import { createUserDto } from '../users/dto';
 import { loginUserDto } from './dto';
 
 import { AuthUserResponse } from './response';
+import { TokenService } from '../token/token.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly userService: UsersService) {}
+  constructor(
+    private readonly userService: UsersService,
+    private readonly tokenService: TokenService,
+  ) {}
 
   async reqisterUser(dto: createUserDto): Promise<createUserDto> {
     const existUser = await this.userService.findUserByEmail(dto.email);
@@ -30,6 +34,8 @@ export class AuthService {
     );
     if (!validatePassword) throw new BadRequestException(AppErrors.WRONG_DATA);
 
-    return existUser;
+    const token = await this.tokenService.generateGwtToken(dto.email);
+
+    return { ...existUser.dataValues, token };
   }
 }
