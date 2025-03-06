@@ -36,6 +36,9 @@ export class AuthService {
 
     const token = await this.tokenService.generateGwtToken(dto.email);
 
-    return { ...existUser.dataValues, token };
+    const publicUser = await this.userService.getPublicUser(dto.email);
+    if (!publicUser) throw new BadRequestException(AppErrors.USER_NOT_EXISTS);
+
+    return { ...publicUser.dataValues, token };
   }
 }
