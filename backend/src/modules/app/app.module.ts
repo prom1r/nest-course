@@ -9,6 +9,7 @@ import { User } from '../users/models/user.model';
 import { AuthModule } from '../auth/auth.module';
 import { TokenModule } from '../token/token.module';
 import { PostsModule } from '../posts/posts.module';
+import { Post } from '../posts/models/post.model';
 
 @Module({
   imports: [
@@ -30,7 +31,7 @@ import { PostsModule } from '../posts/posts.module';
         database: configService.get('db_name'),
         autoLoadModels: true, // автоматически загружать модели
         synchronize: true,
-        models: [User],
+        models: [User, Post],
       }),
     }),
     UsersModule,
