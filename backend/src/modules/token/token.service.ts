@@ -9,8 +9,8 @@ export class TokenService {
     private readonly configService: ConfigService,
   ) {}
 
-  async generateGwtToken(userMail: string) {
-    const payload = { userMail };
+  async generateGwtToken(user: object) {
+    const payload = { user };
 
     return this.jwtService.sign(payload, {
       secret: this.configService.get('secret'),

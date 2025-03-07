@@ -34,11 +34,17 @@ export class AuthService {
     );
     if (!validatePassword) throw new BadRequestException(AppErrors.WRONG_DATA);
 
-    const token = await this.tokenService.generateGwtToken(dto.email);
+    const user = await this.userService.getPublicUser(dto.email);
+    if (!user) throw new BadRequestException(AppErrors.USER_NOT_EXISTS);
 
-    const publicUser = await this.userService.getPublicUser(dto.email);
-    if (!publicUser) throw new BadRequestException(AppErrors.USER_NOT_EXISTS);
+    const userData = {
+      id: user.dataValues.id,
+      name: user.dataValues.firstName,
+      email: user.dataValues.email,
+    };
 
-    return { ...publicUser.dataValues, token };
+    const token = await this.tokenService.generateGwtToken(userData);
+
+    return { ...user, token };
   }
 }
