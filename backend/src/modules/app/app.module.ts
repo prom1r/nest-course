@@ -8,6 +8,7 @@ import congigurations from 'src/configurations';
 import { User } from '../users/models/user.model';
 import { AuthModule } from '../auth/auth.module';
 import { TokenModule } from '../token/token.module';
+import { PostsModule } from '../posts/posts.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { TokenModule } from '../token/token.module';
     UsersModule,
     AuthModule,
     TokenModule,
+    PostsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

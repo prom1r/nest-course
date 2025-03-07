@@ -1,4 +1,5 @@
-import { Column, Model, Table } from 'sequelize-typescript';
+import { Column, HasMany, Model, Table } from 'sequelize-typescript';
+import { Post } from 'src/modules/posts/models/post.model';
 
 @Table
 export class User extends Model {
@@ -14,4 +15,11 @@ export class User extends Model {
 
   @Column
   email: string;
+
+  // связь один ко многим
+  @HasMany(() => Post, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  posts: Post[];
 }
