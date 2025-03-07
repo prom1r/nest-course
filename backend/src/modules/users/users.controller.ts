@@ -22,4 +22,11 @@ export class UsersController {
   updateUser(@Body() dto: UpdateUserDto, @Req() request) {
     return this.usersService.updateUser(request.user.id, dto);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('delete')
+  deleteUser(@Req() request) {
+    console.log(request.user);
+    return this.usersService.deleteUser(request.user.id);
+  }
 }

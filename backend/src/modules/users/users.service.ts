@@ -52,4 +52,8 @@ export class UsersService {
     await this.userRepository.update(dto, { where: { id } });
     return await this.getPublicUserById(id);
   }
+
+  async deleteUser(id: number) {
+    await this.userRepository.destroy({ where: { id } });
+  }
 }
