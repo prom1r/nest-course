@@ -12,7 +12,7 @@ export class PostsService {
 
   async createPost(postDto: PostDto, user) {
     const postData = {
-      user: user.id,
+      userId: user.id,
       discription: postDto.discription,
     };
 
@@ -20,7 +20,7 @@ export class PostsService {
   }
 
   async getAllPosts(user) {
-    return await this.postRepository.findAll({ where: { user: user.id } });
+    return await this.postRepository.findAll({ where: { userId: user.id } });
   }
 
   async updatePost(postDto: PostDto, id) {

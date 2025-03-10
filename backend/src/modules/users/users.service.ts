@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { User } from './models/user.model';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto, UpdateUserDto } from './dto';
+import { Post } from '../posts/models/post.model';
 
 @Injectable()
 export class UsersService {
@@ -38,6 +39,10 @@ export class UsersService {
     return this.userRepository.findOne({
       where: { email },
       attributes: { exclude: ['password'] },
+      include: {
+        model: Post,
+        required: false,
+      },
     });
   }
 
