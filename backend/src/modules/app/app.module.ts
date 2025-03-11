@@ -7,7 +7,6 @@ import { SequelizeModule } from '@nestjs/sequelize'; //после добавле
 import congigurations from 'src/configurations';
 import { User } from '../users/models/user.model';
 import { AuthModule } from '../auth/auth.module';
-import { TokenModule } from '../token/token.module';
 import { PostsModule } from '../posts/posts.module';
 import { Post } from '../posts/models/post.model';
 
@@ -23,20 +22,19 @@ import { Post } from '../posts/models/post.model';
       inject: [ConfigService],
       // после добавления в .env даных (DB_HOST...) позволяет использовать конфигурацию при помощи функции useFactory
       useFactory: (configService: ConfigService) => ({
-        dialect: 'postgres', // какую базу даных использовать
+        dialect: 'postgres',
         host: configService.get('db_host'),
         port: configService.get('db_port'),
         username: configService.get('db_user'),
         password: configService.get('db_password'),
         database: configService.get('db_name'),
-        autoLoadModels: true, // автоматически загружать модели
+        autoLoadModels: true,
         synchronize: true,
         models: [User, Post],
       }),
     }),
     UsersModule,
     AuthModule,
-    TokenModule,
     PostsModule,
   ],
   controllers: [AppController],

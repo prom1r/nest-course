@@ -7,14 +7,18 @@ import { AppErrors } from 'src/common/const/errors';
 import { CreateUserDto } from '../users/dto';
 import { loginUserDto } from './dto';
 
-import { AuthUserResponse } from './response';
-import { TokenService } from '../token/token.service';
+import { JwtService } from '@nestjs/jwt';
+
+import { Response } from 'express';
+
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UsersService,
-    private readonly tokenService: TokenService,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
   async reqisterUser(dto: CreateUserDto): Promise<CreateUserDto> {
@@ -24,8 +28,7 @@ export class AuthService {
     return this.userService.createUser(dto);
   }
 
-  // async loginUser(dto: loginUserDto): Promise<AuthUserResponse> {
-  async loginUser(dto: loginUserDto): Promise<any> {
+  async loginUser(dto: loginUserDto, res: Response): Promise<any> {
     const existUser = await this.userService.findUserByEmail(dto.email);
     if (!existUser) throw new BadRequestException(AppErrors.USER_NOT_EXISTS);
 
@@ -35,17 +38,24 @@ export class AuthService {
     );
     if (!validatePassword) throw new BadRequestException(AppErrors.WRONG_DATA);
 
-    const user = await this.userService.getPublicUser(dto.email);
+    const user = await this.userService.findUserByEmail(dto.email);
+
     if (!user) throw new BadRequestException(AppErrors.USER_NOT_EXISTS);
 
-    const userData = {
-      id: user.dataValues.id,
-      name: user.dataValues.firstName,
+    const payload = {
+      userId: user.dataValues.id,
       email: user.dataValues.email,
+      name: user.dataValues.firstName,
     };
+    const token = this.jwtService.sign(payload);
 
-    const token = await this.tokenService.generateGwtToken(userData);
+    res.cookie('jwt', token, {
+      httpOnly: true,
+      sameSite: 'strict',
+      maxAge: 1000 * 60 * 60 * 24,
+      secure: false,
+    });
 
-    return { user, token };
+    return res.json({ message: 'Logged in successfully' });
   }
 }

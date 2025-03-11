@@ -12,13 +12,13 @@ export class Post extends Model {
   @ForeignKey(() => User) // будет связан с моделью User
   userId: User;
 
-  //const postWithUser = await postRepository.findOne({
-  //   where: { id },
-  //   include: User
-  // });
-  @BelongsTo(() => User) // будет иметь возможность получить данные из модели User
-  author: User;
-
   @Column
   discription: string;
 }
+
+//const postWithUser = await postRepository.findOne({
+//   where: { id },
+//   include: User
+// });
+// @BelongsTo(() => User) // будет иметь возможность получить данные из модели User
+// author: User;

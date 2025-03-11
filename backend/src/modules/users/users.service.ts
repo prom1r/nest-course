@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Req, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './models/user.model';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto, UpdateUserDto } from './dto';
 import { Post } from '../posts/models/post.model';
+import { Request } from 'express';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UsersService {
@@ -35,30 +37,51 @@ export class UsersService {
     return dto;
   }
 
-  async getPublicUser(email: string) {
+  async getPublicUserByEmail(email: string) {
     return this.userRepository.findOne({
       where: { email },
       attributes: { exclude: ['password'] },
       include: {
         model: Post,
         required: false,
+        attributes: ['id', 'discription'],
       },
     });
   }
 
-  async getPublicUserById(id: number) {
-    return this.userRepository.findOne({
-      where: { id },
-      attributes: { exclude: ['password'] },
-    });
+  async getProfile(@Req() req: Request) {
+    const token = req.cookies['jwt'];
+    if (!token) {
+      throw new UnauthorizedException('Not authenticated');
+    }
+
+    try {
+      const payload = new JwtService().verify(token);
+      return {
+        user: { id: payload.sub, email: payload.email, name: payload.name },
+      };
+    } catch (err) {
+      throw new UnauthorizedException('Invalid token');
+    }
   }
 
-  async updateUser(id: number, dto: UpdateUserDto) {
-    await this.userRepository.update(dto, { where: { id } });
-    return await this.getPublicUserById(id);
-  }
+  // async getPublicUserById(id: number) {
+  //   return this.userRepository.findOne({
+  //     where: { id },
+  //     attributes: { exclude: ['password'] },
+  //     include: {
+  //       model: Post,
+  //       required: false,
+  //     },
+  //   });
+  // }
 
-  async deleteUser(id: number) {
-    await this.userRepository.destroy({ where: { id } });
-  }
+  // async updateUser(id: number, dto: UpdateUserDto) {
+  //   await this.userRepository.update(dto, { where: { id } });
+  //   return await this.getPublicUserById(id);
+  // }
+
+  // async deleteUser(id: number) {
+  //   await this.userRepository.destroy({ where: { id } });
+  // }
 }
