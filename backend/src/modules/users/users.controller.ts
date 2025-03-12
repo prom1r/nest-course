@@ -40,10 +40,4 @@ export class UsersController {
     // return this.usersService.deleteUser(request.user.id);
     return;
   }
-
-  @Post('logout')
-  logout(@Res() res: Response) {
-    res.cookie('jwt', '', { maxAge: 0 });
-    return { message: 'Logged out successfully' };
-  }
 }

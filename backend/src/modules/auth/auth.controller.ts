@@ -1,10 +1,11 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../users/dto';
 import { loginUserDto } from './dto';
 import { AuthUserResponse } from './response';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -22,5 +23,13 @@ export class AuthController {
   @Post('login')
   login(@Body() dto: loginUserDto, @Res() res: Response): Promise<any> {
     return this.authService.loginUser(dto, res);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiTags('API')
+  @Post('logout')
+  logout(@Res() res: Response) {
+    res.cookie('jwt', '', { maxAge: 0 });
+    return res.json({ message: 'Logged out successfully' });
   }
 }
