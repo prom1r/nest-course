@@ -36,7 +36,6 @@ export class UsersController {
 
   @Delete('delete')
   deleteUser(@Req() request) {
-    console.log(request.user);
     // return this.usersService.deleteUser(request.user.id);
     return;
   }

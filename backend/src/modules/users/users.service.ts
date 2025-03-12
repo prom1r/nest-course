@@ -6,6 +6,7 @@ import { CreateUserDto, UpdateUserDto } from './dto';
 import { Post } from '../posts/models/post.model';
 import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UsersService {
@@ -13,6 +14,7 @@ export class UsersService {
   // create, findOne, findAll, update, destroy, etc
   constructor(
     @InjectModel(User) private readonly userRepository: typeof User,
+    private readonly configService: ConfigService,
   ) {}
 
   async hashPassword(password: string) {
@@ -51,14 +53,18 @@ export class UsersService {
 
   async getProfile(@Req() req: Request) {
     const token = req.cookies['jwt'];
+
     if (!token) {
       throw new UnauthorizedException('Not authenticated');
     }
 
     try {
-      const payload = new JwtService().verify(token);
+      const payload = new JwtService().verify(token, {
+        secret: this.configService.get('secret'),
+      });
+
       return {
-        user: { id: payload.sub, email: payload.email, name: payload.name },
+        user: { id: payload.userId, email: payload.email, name: payload.name },
       };
     } catch (err) {
       throw new UnauthorizedException('Invalid token');
