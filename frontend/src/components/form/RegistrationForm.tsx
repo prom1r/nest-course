@@ -1,12 +1,34 @@
 import Field from "./Form";
 
 import { useNavigate } from "react-router-dom";
-import { useReqister } from "../../api/queries";
+
 import { useState } from "react";
+import { useRegistration } from "../../hooks/useRegistration";
+
+type FormType = {
+  firstName: string;
+  userName: string;
+  email: string;
+  password: string;
+};
+
+type FieldType = {
+  label: string;
+  name: keyof FormType;
+  type: string;
+  required?: boolean;
+};
+
+const fields: FieldType[] = [
+  { label: "Никнейм", name: "userName", type: "text", required: true },
+  { label: "Имя", name: "firstName", type: "text", required: true },
+  { label: "Email", name: "email", type: "email", required: true },
+  { label: "Пароль", name: "password", type: "password", required: true },
+];
 
 const RegistrationForm = () => {
   const navigate = useNavigate();
-  const mutation = useReqister();
+  const mutation = useRegistration();
   const [form, setForm] = useState({
     firstName: "",
     userName: "",
@@ -19,7 +41,6 @@ const RegistrationForm = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
     mutation.mutate(form, {
       onSuccess: () => navigate("/"),
       onError: (error) => {
@@ -30,36 +51,17 @@ const RegistrationForm = () => {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <Field
-          label={"Никнейм"}
-          value={form.userName}
-          handleChange={handleChange}
-          type={"text"}
-          name={"userName"}
-        />
-        <Field
-          label={"Имя"}
-          value={form.firstName}
-          handleChange={handleChange}
-          type={"text"}
-          name={"firstName"}
-        />
-        <Field
-          label={"Email"}
-          value={form.email}
-          handleChange={handleChange}
-          type={"email"}
-          name={"email"}
-          required={true}
-        />
-        <Field
-          label="Пароль"
-          value={form.password}
-          handleChange={handleChange}
-          type={"password"}
-          name={"password"}
-          required={true}
-        />
+        {fields.map((field) => (
+          <Field
+            key={field.name}
+            label={field.label}
+            value={form[field.name]}
+            handleChange={handleChange}
+            type={field.type}
+            name={field.name}
+            required={field.required}
+          />
+        ))}
         <button type="submit" disabled={mutation.isPending}>
           {mutation.isPending ? "Регистрация..." : "Зарегистрироваться"}
         </button>

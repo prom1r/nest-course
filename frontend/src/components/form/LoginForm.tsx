@@ -1,13 +1,31 @@
 import Field from "./Form";
 
-import { useNavigate } from "react-router-dom";
-import { useLogin } from "../../api/queries";
 import { useState } from "react";
+import { useLogin } from "../../hooks/useLogin";
+import useModal from "../../hooks/useModal";
+import { useProfileTest } from "../../hooks/useProfile";
 
-interface LoginFormProps {}
+type FormType = {
+  email: string;
+  password: string;
+};
+
+type FieldType = {
+  label: string;
+  name: keyof FormType;
+  type: string;
+  required?: boolean;
+};
+
+const fields: FieldType[] = [
+  { label: "Email", name: "email", type: "email", required: true },
+  { label: "Пароль", name: "password", type: "password", required: true },
+];
+
 const LoginForm = () => {
-  const navigate = useNavigate();
+  const modal = useModal();
   const mutation = useLogin();
+  const mutationTest = useProfileTest();
   const [form, setForm] = useState({ email: "", password: "" });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -17,35 +35,35 @@ const LoginForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     mutation.mutate(form, {
-      onSuccess: () => navigate("/"),
+      // onSuccess: () => modal.close(),
       onError: (error) => {
         console.error("Ошибка входа", error);
       },
     });
   };
+
+  const handleSubmitTest = async (e: React.FormEvent) => {
+    mutationTest.mutate();
+  };
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <Field
-          label={"Email"}
-          value={form.email}
-          handleChange={handleChange}
-          type={"email"}
-          name={"email"}
-          required={true}
-        />
-        <Field
-          label="Пароль"
-          value={form.password}
-          handleChange={handleChange}
-          type={"password"}
-          name={"password"}
-          required={true}
-        />
+        {fields.map((field) => (
+          <Field
+            key={field.name}
+            label={field.label}
+            value={form[field.name]}
+            handleChange={handleChange}
+            type={field.type}
+            name={field.name}
+            required={field.required}
+          />
+        ))}
         <button type="submit" disabled={mutation.isPending}>
           {mutation.isPending ? "Вход..." : "Войти"}
         </button>
       </form>
+      <button onClick={handleSubmitTest}>TEST</button>
       {mutation.isError && <p>Ошибка: {mutation.error.message}</p>}
     </div>
   );

@@ -9,16 +9,13 @@ interface AuthState {
 }
 
 export const useAuthStore = create<AuthState>((set) => {
-  const storedUser = localStorage.getItem("user");
-  const initialUser = storedUser ? JSON.parse(storedUser) : null;
   return {
-    user: initialUser,
+    user: null,
     setUser: (user) => {
       set({ user });
     },
     clearUser: () => {
       set({ user: null });
-      localStorage.removeItem("user");
     },
   };
 });
