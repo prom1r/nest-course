@@ -1,18 +1,27 @@
-// import { create } from "zustand";
+import { create } from "zustand";
+import { devtools } from "zustand/middleware";
+import { immer } from "zustand/middleware/immer";
+import { createNewPost, getAllPosts } from "../api/queries";
 
-// interface PostsStore {
-//   posts: any | null;
-//   setPosts: (posts: any) => void;
-//   clearPosts: () => void;
-// }
-// export const usePostsStore = create<PostsStore>((set) => {
-//   return {
-//     posts: null,
-//     setPosts: (posts) => {
-//       set({ posts });
-//     },
-//     clearPosts: () => set({ posts: null }),
-//   };
-// });
+interface Post {
+  id: number;
+  discription: string;
+}
 
-export {};
+interface PostsStore {
+  posts: Post[] | null;
+  fetchUserPosts: () => Promise<void>;
+}
+export const usePostsStore = create<PostsStore>()(
+  devtools(
+    immer((set) => {
+      return {
+        posts: null,
+        fetchUserPosts: async () => {
+          const data = await getAllPosts();
+          set({ posts: data });
+        },
+      };
+    })
+  )
+);

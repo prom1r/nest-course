@@ -51,33 +51,39 @@ export const profile = async () => {
   }
 };
 
-// export const useReqister = () => {
-//   return useMutation({
-//     mutationFn: register,
-//   });
-// };
+export const createNewPost = async (post: any) => {
+  try {
+    const response = await api.post("posts/create", post, {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.log("Post not created");
+    throw error;
+  }
+};
 
-// const getAllPosts = async () => {
-//   const token = localStorage.getItem("token");
-//   await api.get("/posts/get-all-posts", {
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//     },
-//   });
-// };
+export const deletePost = async (id: number) => {
+  try {
+    const response = await api.delete(`posts/delete-post/`, {
+      params: { id },
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.log("Post not deleted");
+    throw error;
+  }
+};
 
-// const createPost = async (credentials: { discription: string }) => {
-//   const token = localStorage.getItem("token");
-//   await api.post("posts/create", credentials, {
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//     },
-//   });
-// };
-
-// export const useCreatePost = () => {
-//   const setPosts = usePostsStore((state) => state.setPosts);
-//   return useMutation({
-//     mutationFn: createPost,
-//   });
-// };
+export const getAllPosts = async () => {
+  try {
+    const response = await api.get("posts/get-all-posts", {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.log("Posts not found");
+    throw error;
+  }
+};

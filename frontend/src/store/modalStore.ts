@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { devtools } from "zustand/middleware";
 
 interface ModalState {
   isOpen: boolean;
@@ -7,12 +8,14 @@ interface ModalState {
   close: () => void;
 }
 
-const useModalStore = create<ModalState>((set) => ({
-  isOpen: false,
-  component: null,
-  open: () => set({ isOpen: true }),
-  close: () => set({ component: null, isOpen: false }),
-}));
+const useModalStore = create<ModalState>()(
+  devtools((set) => ({
+    isOpen: false,
+    component: null,
+    open: () => set({ isOpen: true }),
+    close: () => set({ component: null, isOpen: false }),
+  }))
+);
 
 export default useModalStore;
 
