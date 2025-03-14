@@ -18,7 +18,9 @@ export const login = async (credentials: {
 
 export const logout = async () => {
   try {
-    await api.post("auth/logout");
+    await api.get("auth/logout", {
+      withCredentials: true,
+    });
   } catch (error) {
     console.error("Logout failed:", error);
     throw error;

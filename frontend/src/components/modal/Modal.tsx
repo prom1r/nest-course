@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
-import useModal from "../../hooks/useModal";
+import useModalStore from "../../store/modalStore";
 
 const Modal = () => {
-  const modal = useModal();
+  const modal = useModalStore();
   const modalRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {

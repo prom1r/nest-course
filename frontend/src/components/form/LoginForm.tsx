@@ -2,8 +2,7 @@ import Field from "./Form";
 
 import { useState } from "react";
 import { useLogin } from "../../hooks/useLogin";
-import useModal from "../../hooks/useModal";
-import { useProfileTest } from "../../hooks/useProfile";
+import useModalStore from "../../store/modalStore";
 
 type FormType = {
   email: string;
@@ -23,9 +22,8 @@ const fields: FieldType[] = [
 ];
 
 const LoginForm = () => {
-  const modal = useModal();
+  const modal = useModalStore();
   const mutation = useLogin();
-  const mutationTest = useProfileTest();
   const [form, setForm] = useState({ email: "", password: "" });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,16 +33,13 @@ const LoginForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     mutation.mutate(form, {
-      // onSuccess: () => modal.close(),
+      onSuccess: () => modal.close(),
       onError: (error) => {
         console.error("Ошибка входа", error);
       },
     });
   };
 
-  const handleSubmitTest = async (e: React.FormEvent) => {
-    mutationTest.mutate();
-  };
   return (
     <div>
       <form onSubmit={handleSubmit}>
@@ -63,7 +58,6 @@ const LoginForm = () => {
           {mutation.isPending ? "Вход..." : "Войти"}
         </button>
       </form>
-      <button onClick={handleSubmitTest}>TEST</button>
       {mutation.isError && <p>Ошибка: {mutation.error.message}</p>}
     </div>
   );

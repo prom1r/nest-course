@@ -1,5 +1,5 @@
 import React from "react";
-import useModal from "../../hooks/useModal";
+import useModalStore from "../../store/modalStore";
 
 interface ModalButtonProps {
   component: React.ReactNode;
@@ -7,7 +7,7 @@ interface ModalButtonProps {
 }
 
 const ModalButton: React.FC<ModalButtonProps> = ({ component, text }) => {
-  const modal = useModal();
+  const modal = useModalStore();
 
   const handleClick = () => {
     modal.component = component;

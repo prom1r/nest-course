@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../users/dto';
 import { loginUserDto } from './dto';
@@ -27,7 +27,7 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @ApiTags('API')
-  @Post('logout')
+  @Get('logout')
   logout(@Res() res: Response) {
     res.cookie('jwt', '', { maxAge: 0 });
     return res.json({ message: 'Logged out successfully' });

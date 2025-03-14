@@ -1,12 +1,13 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { login } from "../api/queries";
+import { useAuthStore } from "../store/authStore";
 
 export const useLogin = () => {
-  const queryClient = useQueryClient();
+  const setIsLoggedIn = useAuthStore((state) => state.setIsLoggedIn);
   return useMutation({
     mutationFn: login,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+      setIsLoggedIn(true);
     },
   });
 };
