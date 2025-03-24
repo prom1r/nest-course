@@ -9,6 +9,7 @@ import { User } from '../users/models/user.model';
 import { AuthModule } from '../auth/auth.module';
 import { PostsModule } from '../posts/posts.module';
 import { Post } from '../posts/models/post.model';
+import { GeminiModule } from '../gemini/gemini.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { Post } from '../posts/models/post.model';
     UsersModule,
     AuthModule,
     PostsModule,
+    GeminiModule,
   ],
   controllers: [AppController],
   providers: [AppService],
